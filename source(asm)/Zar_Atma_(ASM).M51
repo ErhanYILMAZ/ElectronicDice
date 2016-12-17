@@ -1,0 +1,169 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        12/22/2011  00:26:53  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE Zar_Atma.obj TO Zar_Atma_(ASM) RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  Zar_Atma.obj (ZAR_ATMA)
+
+
+LINK MAP OF MODULE:  Zar_Atma_(ASM) (ZAR_ATMA)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     01CBH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  Zar_Atma_(ASM) (ZAR_ATMA)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ZAR_ATMA
+  C:017CH         SYMBOL        A1
+  C:018EH         SYMBOL        A2
+  C:0195H         SYMBOL        A3
+  C:01A1H         SYMBOL        ANIMASYON
+  N:0030H         SYMBOL        ANIMASYON_SAYAC
+  C:0110H         SYMBOL        ANIMASYON_TABLO
+  C:0141H         SYMBOL        ATLA
+  C:0116H         SYMBOL        BASLA
+  C:01C6H         SYMBOL        BEKLE
+  C:0165H         SYMBOL        BITIR
+  B:0021H.0       SYMBOL        CHIP_SELECT
+  B:00A0H.2       SYMBOL        CS1
+  B:00A0H.3       SYMBOL        CS2
+  C:01C2H         SYMBOL        GECIKME
+  C:0175H         SYMBOL        GONDER
+  C:013AH         SYMBOL        KAL
+  C:0135H         SYMBOL        LOOP
+  D:0090H         SYMBOL        P1
+  D:00A0H         SYMBOL        P2
+  N:0030H         SYMBOL        RASGELE_SAYI
+  C:0196H         SYMBOL        RASGELE_SAYI_URET
+  B:00A0H.0       SYMBOL        SCK
+  B:00A0H.1       SYMBOL        SDO
+  C:0168H         SYMBOL        SEGMENT_GOSTER
+  C:0100H         SYMBOL        SEGMENT_TABLO
+  N:0020H         SYMBOL        SHIFT_DATA
+  C:0173H         SYMBOL        SHIFT_SEND_BYTE
+  C:015DH         SYMBOL        SIFIR_DEGIL
+  C:019EH         SYMBOL        SON1
+  C:01C1H         SYMBOL        SON2
+BL51 BANKED LINKER/LOCATER V6.22                                                      12/22/2011  00:26:53  PAGE 2
+
+
+  D:0088H         SYMBOL        TCON
+  C:0152H         SYMBOL        TEKRAR_URET
+  D:008CH         SYMBOL        TH0
+  D:008AH         SYMBOL        TL0
+  D:0089H         SYMBOL        TMOD
+  C:014FH         SYMBOL        ZAR_AT
+  B:0090H.0       SYMBOL        ZAR_BUTON
+  C:0000H         LINE#         23
+  C:0116H         LINE#         44
+  C:0117H         LINE#         45
+  C:0119H         LINE#         46
+  C:011CH         LINE#         47
+  C:011FH         LINE#         48
+  C:0122H         LINE#         49
+  C:0125H         LINE#         50
+  C:0127H         LINE#         51
+  C:0129H         LINE#         52
+  C:012CH         LINE#         53
+  C:012EH         LINE#         54
+  C:0130H         LINE#         55
+  C:0133H         LINE#         56
+  C:0135H         LINE#         59
+  C:0138H         LINE#         60
+  C:013AH         LINE#         62
+  C:013DH         LINE#         63
+  C:013FH         LINE#         64
+  C:0141H         LINE#         66
+  C:0143H         LINE#         67
+  C:0145H         LINE#         68
+  C:0147H         LINE#         69
+  C:0149H         LINE#         70
+  C:014BH         LINE#         71
+  C:014DH         LINE#         72
+  C:014FH         LINE#         76
+  C:0152H         LINE#         78
+  C:0154H         LINE#         79
+  C:0156H         LINE#         80
+  C:0158H         LINE#         81
+  C:015BH         LINE#         82
+  C:015DH         LINE#         84
+  C:015EH         LINE#         85
+  C:0160H         LINE#         86
+  C:0162H         LINE#         87
+  C:0165H         LINE#         89
+  C:0167H         LINE#         90
+  C:0168H         LINE#         96
+  C:016AH         LINE#         97
+  C:016DH         LINE#         98
+  C:016EH         LINE#         99
+  C:0170H         LINE#         100
+  C:0172H         LINE#         101
+  C:0173H         LINE#         104
+  C:0175H         LINE#         106
+  C:0177H         LINE#         107
+  C:017AH         LINE#         108
+  C:017CH         LINE#         109
+  C:017EH         LINE#         110
+BL51 BANKED LINKER/LOCATER V6.22                                                      12/22/2011  00:26:53  PAGE 3
+
+
+  C:0180H         LINE#         111
+  C:0182H         LINE#         112
+  C:0183H         LINE#         113
+  C:0185H         LINE#         114
+  C:0187H         LINE#         115
+  C:018AH         LINE#         116
+  C:018CH         LINE#         117
+  C:018EH         LINE#         119
+  C:0191H         LINE#         120
+  C:0193H         LINE#         121
+  C:0195H         LINE#         123
+  C:0196H         LINE#         127
+  C:0197H         LINE#         128
+  C:0199H         LINE#         129
+  C:019AH         LINE#         130
+  C:019CH         LINE#         131
+  C:019EH         LINE#         133
+  C:01A0H         LINE#         134
+  C:01A1H         LINE#         137
+  C:01A4H         LINE#         138
+  C:01A6H         LINE#         139
+  C:01A7H         LINE#         140
+  C:01A9H         LINE#         141
+  C:01ABH         LINE#         142
+  C:01ADH         LINE#         143
+  C:01AFH         LINE#         144
+  C:01B1H         LINE#         145
+  C:01B3H         LINE#         146
+  C:01B5H         LINE#         147
+  C:01B7H         LINE#         148
+  C:01B9H         LINE#         149
+  C:01BAH         LINE#         150
+  C:01BCH         LINE#         151
+  C:01BEH         LINE#         152
+  C:01BFH         LINE#         153
+  C:01C1H         LINE#         155
+  C:01C2H         LINE#         160
+  C:01C4H         LINE#         161
+  C:01C6H         LINE#         163
+  C:01C8H         LINE#         164
+  C:01CAH         LINE#         165
+  -------         ENDMOD        ZAR_ATMA
+
+Program Size: data=8.0 xdata=0 code=459
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

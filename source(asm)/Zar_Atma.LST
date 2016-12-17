@@ -1,0 +1,290 @@
+A51 MACRO ASSEMBLER  ZAR_ATMA                                                             12/22/2011 00:26:53 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02
+OBJECT MODULE PLACED IN Zar_Atma.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE Zar_Atma.asm SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;************************************************************************
+                       2     ;       Program Ad      : Zar_Atma.asm                                                     
+                                                  *
+                       3     ;       Programn amac : Bu program elektronik zar olarak çalþmaktadr.   *
+                       4     ;       Yazan                   : Erhan YILMAZ                                             
+                                                          *
+                       5     ;       Tarih                   : 10-12-2011                                               
+                                                          *
+                       6     ;       Sürüm                   : 1.0                                                      
+                                                                  *
+                       7     ;       Boyut                   : 203 Byte                                                 
+                                                                  *
+                       8     ;************************************************************************
+                       9     
+                      10                                                                             
+  0020                11     SHIFT_DATA                      EQU     0X20                    ; Seri veri yoluna gönderil
+                             ecek veriyi tutan yazmaç
+  0008                12     CHIP_SELECT                     EQU     0X21.0                  ; Gösterge(74HC595) Seçme b
+                             iti
+  0030                13     RASGELE_SAYI            EQU     0X30                    ; Rasgele say deðiþkeni
+  0030                14     ANIMASYON_SAYAC         EQU             0X30                    ; Animasyon program sayac
+  0090                15     ZAR_BUTON                       EQU     P1.0                    ; Zar atma butonu
+  00A0                16     SCK                                     EQU             P2.0                    ; 74HC595 S
+                             aat sinyali çkþ pini
+  00A1                17     SDO                                     EQU             P2.1                    ; 74HC595 S
+                             eri veri çkþ pini
+  00A2                18     CS1                                     EQU             P2.2                    ; Gösterge 
+                             1 seçme pini
+  00A3                19     CS2                                     EQU             P2.3                    ; Gösterge 
+                             2 seçme pini 
+                      20     
+                      21     
+0000                  22                             ORG 0000H                                               ;RESET vekt
+                             örü adresi
+0000 2116             23                             AJMP BASLA                                              ;BASLA etik
+                             etine git
+                      24     
+0100                  25                             ORG 0100H
+                      26     ;7 parça gösterge veri tablosu
+                      27     ;          a
+                      28     ;        -----
+                      29     ;       |         | b
+                      30     ; f     |  g  |
+                      31     ;        -----
+                      32     ; e |     | c
+                      33     ;       |         |
+                      34     ;        ----- . dp
+                      35     ;          d
+                      36     ;                                  .gfedcba                     
+                      37     ; Segment Data = 0bxxxxxxxx
+                      38     ; 7 parça göstergelere gönderilecek olan deðerler program hafzadan sabit olarak okunarak gö
+                             stegelere gönderilir.
+0100 3F065B4F         39     SEGMENT_TABLO:          DB      0X3F,0X06,0X5B,0X4F,0X66,0X6D,0X7D,0X07,0X7F,0X6F,0X77,0X7C
+                             ,0X39,0X5E,0X79,0X71
+0104 666D7D07                
+0108 7F6F777C                
+010C 395E7971                
+0110 01020408         40     ANIMASYON_TABLO:        DB              0X01,0X02,0X04,0X08,0X10,0X20
+A51 MACRO ASSEMBLER  ZAR_ATMA                                                             12/22/2011 00:26:53 PAGE     2
+
+0114 1020                    
+                      41     
+                      42     
+0116                  43     BASLA:
+0116 E4               44                             CLR     A                                                       ; A
+                             kümülatörü temizle
+0117 F5A0             45                             MOV     P2,A                                            ; Port2'yi 
+                             temizle
+0119 753000           46                             MOV     ANIMASYON_SAYAC,#0X00           ; Animasyon sayacn sfrla   
+                                  
+011C 758C01           47                             MOV             TH0,#0X01                                       ; T
+                             imer0 reload deðerini yükle
+011F 758A01           48                             MOV             TL0,#0X01                                       ; T
+                             imer0 ilk deðerini yükle
+0122 7589F2           49                             MOV             TMOD,#0XF2                                      ; T
+                             imer0 8 bit tekrar yüklemeli(0x01) olarak çalþtrlr.
+0125 D28C             50                             SETB    TCON.4                                          ; Timer0 ça
+                             lþtrlr.
+0127 C208             51                             CLR             CHIP_SELECT                                     ; B
+                             aþlangçta Gösterge 1 temizlenir.
+0129 752000           52                             MOV             SHIFT_DATA,#0x00
+012C 3173             53                             ACALL   SHIFT_SEND_BYTE 
+012E D208             54                             SETB    CHIP_SELECT                                     ; Baþlangçt
+                             a Gösterge 2 temizlenir.
+0130 752000           55                             MOV             SHIFT_DATA,#0x00
+0133 3173             56                             ACALL   SHIFT_SEND_BYTE                 
+                      57     
+0135                  58     LOOP:                                   
+0135 2090FD           59                             JB              ZAR_BUTON,LOOP                          ; Butona ba
+                             slana kadar bekle
+0138 31C2             60                             ACALL   GECIKME                                         ; Buton ark
+                             n önlemek için bi süre beklenir.
+013A                  61     KAL:
+013A 209004           62                             JB              ZAR_BUTON,ATLA                          ; Buton bra
+                             klana kadar animasyon programn çalþtr.
+013D 31A1             63                             ACALL   ANIMASYON
+013F 213A             64                             AJMP    KAL
+0141                  65     ATLA:
+0141 314F             66                             ACALL   ZAR_AT                                          ; Birinci z
+                             ar deðerini üret
+0143 C208             67                             CLR             CHIP_SELECT                                     ; G
+                             österge0'i seç
+0145 3168             68                             ACALL   SEGMENT_GOSTER                          ; Zar deðerini Göst
+                             erge0'de göster
+0147 314F             69                             ACALL   ZAR_AT                                          ; Ýkinci za
+                             r deðerini üret
+0149 D208             70                             SETB    CHIP_SELECT                                     ; Gösterge1
+                             'i seç
+014B 3168             71                             ACALL   SEGMENT_GOSTER                          ; Zar deðerini Göst
+                             erge1'de göster
+014D 2135             72                             AJMP    LOOP                                            ; Sonsuz dö
+                             ngü
+                      73     
+                      74     ;       Bu alt program 1-6 arasnda rasgele say üretir sonucu Akümülatöre yazar.
+014F                  75     ZAR_AT:                                 
+014F 858A30           76                             MOV             RASGELE_SAYI,TL0                        ; Rasgele s
+                             ay üreteci için Timer0'dan baþlangç deðeri al
+0152                  77     TEKRAR_URET:
+0152 3196             78                             ACALL   RASGELE_SAYI_URET                       ; Rasgele say üret
+0154 E530             79                             MOV             A,RASGELE_SAYI
+0156 540F             80                             ANL             A,#0X0F
+0158 B40002           81                             CJNE    A,#0X00,SIFIR_DEGIL             ; Üretilen rasgele saynn al
+                             t 4 bitinin sfr olup olmadðn test et.
+015B 80F5             82                             SJMP    TEKRAR_URET                                     ; Sfrsa baþ
+                             ka say üret.
+015D                  83     SIFIR_DEGIL:
+A51 MACRO ASSEMBLER  ZAR_ATMA                                                             12/22/2011 00:26:53 PAGE     3
+
+015D C3               84                             CLR C                                               
+015E 9407             85                             SUBB    A,#0X07                            
+0160 4003             86                             JC              BITIR                                           ; Ü
+                             retilen saynn alt 4 bitinin 6'dan büyük olup olmadðn test et.
+0162 020152           87                             LJMP    TEKRAR_URET                                     ; Büyükse b
+                             aþka say üret.
+0165                  88     BITIR:          
+0165 E530             89                             MOV             A,RASGELE_SAYI
+0167 22               90                             RET
+                      91     
+                      92     
+                      93     ;       Bu alt program  (A) Akümülatördeki deðerin alt 4 bitini (0-F) göstergelere
+                      94     ;       gönderir. CHIP_SELECT bayrað set edilmiþse veri gösterge1'e edilmemiþse gösterge0'a
+                              gider
+0168                  95     SEGMENT_GOSTER:
+0168 540F             96                             ANL             A,#0X0F
+016A 900100           97                             MOV     DPTR,#SEGMENT_TABLO    
+016D 93               98                     MOVC    A,@A+DPTR         
+016E F520             99                             MOV             SHIFT_DATA,A
+0170 3173            100                             ACALL   SHIFT_SEND_BYTE
+0172 22              101                             RET
+                     102     ;       Bu alt program  SHIFT_DATA yazmacndaki 8 bit veriyi seri veri yolu üzerinden 74HC59
+                             5 çiplerine gönderir. 
+0173                 103     SHIFT_SEND_BYTE:
+0173 7808            104                             MOV     R0,#0X08                                        ;Sayac deðe
+                             ri olarak 8 yükle
+0175                 105     GONDER:
+0175 D2A1            106                             SETB    SDO                                                     ; S
+                             eri veri hattn set et
+0177 200702          107                             JB              SHIFT_DATA.7,A1                         ; SHIFT_DAT
+                             A.7 bitini kontrol et
+017A C2A1            108                             CLR             SDO                                                
+                                  ; Sfr ise seri veri hattn sfra çek
+017C D2A0            109     A1:                     SETB    SCK                                                     ; S
+                             aat sinyalini oluþtur.
+017E C2A0            110                             CLR     SCK
+0180 E520            111                             MOV             A,SHIFT_DATA                            ; Diðer bit
+                             i göndermek için 1 bit sola ötele.
+0182 23              112                             RL              A
+0183 F520            113                             MOV             SHIFT_DATA,A                            ; 8 bit yol
+                             lanana kadar devam et.
+0185 D8EE            114                             DJNZ    R0,GONDER
+0187 200804          115                             JB              CHIP_SELECT,A2                          ; Gösterge 
+                             1 seçiliyse
+018A D2A2            116                             SETB    CS1                                                     ; 1
+                             . 74HC595 latch edilir.
+018C C2A2            117                             CLR             CS1
+018E                 118     A2:
+018E 300804          119                             JNB             CHIP_SELECT,A3                          ; Gösterge 
+                             2 seçiliyse
+0191 D2A3            120                             SETB    CS2                                                     ; 2
+                             . 74HC595 latch edilir.
+0193 C2A3            121                             CLR             CS2
+0195                 122     A3:
+0195 22              123                             RET
+                     124     
+                     125     ;       Bu alt program LFSR(Lineer Feedback Shift Register) temelli 8bit rasgele say üretir
+                             .(alntdr)
+0196                 126     RASGELE_SAYI_URET:
+0196 C3              127                             CLR     C
+0197 E530            128                             MOV             A,RASGELE_SAYI
+0199 13              129                             RRC             A
+019A 5002            130                             JNC             SON1
+019C 64B4            131                             XRL             A,#0XB4
+019E                 132     SON1:
+019E F530            133                             MOV             RASGELE_SAYI,A
+A51 MACRO ASSEMBLER  ZAR_ATMA                                                             12/22/2011 00:26:53 PAGE     4
+
+01A0 22              134                             RET
+                     135     ;       Bu alt program göstergelerde yürüyen segment efekti yapar.
+01A1                 136     ANIMASYON:
+01A1 900110          137                             MOV     DPTR,#ANIMASYON_TABLO 
+01A4 E530            138                             MOV             A,ANIMASYON_SAYAC   
+01A6 93              139                     MOVC    A,@A+DPTR
+01A7 C208            140                             CLR             CHIP_SELECT
+01A9 F520            141                             MOV             SHIFT_DATA,A
+01AB 3173            142                             ACALL   SHIFT_SEND_BYTE
+01AD D208            143                             SETB    CHIP_SELECT
+01AF F520            144                             MOV             SHIFT_DATA,A
+01B1 3173            145                             ACALL   SHIFT_SEND_BYTE
+01B3 31C2            146                             ACALL   GECIKME
+01B5 0530            147                             INC             ANIMASYON_SAYAC
+01B7 E530            148                             MOV             A,ANIMASYON_SAYAC
+01B9 C3              149                             CLR             C
+01BA 9406            150                             SUBB    A,#0x06
+01BC 4003            151                             JC              SON2
+01BE E4              152                             CLR             A
+01BF F530            153                             MOV             ANIMASYON_SAYAC,A
+01C1                 154     SON2:
+01C1 22              155                             RET
+                     156     
+                     157     ;       Bu alt program gecikme saðlamak için kullanlr. (alntdr)
+                     158     ;       Gecikme = ( 12 * ( R1 + ( 257 * R2 ) - 254 )) / Freq
+01C2                 159     GECIKME:        
+01C2 7904            160                             MOV     R1,#0X04
+01C4 7A80            161                             MOV     R2,#0X80        
+01C6                 162     BEKLE:                          
+01C6 D9FE            163                             DJNZ    R1,BEKLE
+01C8 DAFC            164                             DJNZ    R2,BEKLE
+01CA 22              165                             RET
+                     166     
+                     167     END
+A51 MACRO ASSEMBLER  ZAR_ATMA                                                             12/22/2011 00:26:53 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+A1 . . . . . . . .  C ADDR   017CH   A   
+A2 . . . . . . . .  C ADDR   018EH   A   
+A3 . . . . . . . .  C ADDR   0195H   A   
+ANIMASYON. . . . .  C ADDR   01A1H   A   
+ANIMASYON_SAYAC. .  N NUMB   0030H   A   
+ANIMASYON_TABLO. .  C ADDR   0110H   A   
+ATLA . . . . . . .  C ADDR   0141H   A   
+BASLA. . . . . . .  C ADDR   0116H   A   
+BEKLE. . . . . . .  C ADDR   01C6H   A   
+BITIR. . . . . . .  C ADDR   0165H   A   
+CHIP_SELECT. . . .  B ADDR   0021H.0 A   
+CS1. . . . . . . .  B ADDR   00A0H.2 A   
+CS2. . . . . . . .  B ADDR   00A0H.3 A   
+GECIKME. . . . . .  C ADDR   01C2H   A   
+GONDER . . . . . .  C ADDR   0175H   A   
+KAL. . . . . . . .  C ADDR   013AH   A   
+LOOP . . . . . . .  C ADDR   0135H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+RASGELE_SAYI . . .  N NUMB   0030H   A   
+RASGELE_SAYI_URET.  C ADDR   0196H   A   
+SCK. . . . . . . .  B ADDR   00A0H.0 A   
+SDO. . . . . . . .  B ADDR   00A0H.1 A   
+SEGMENT_GOSTER . .  C ADDR   0168H   A   
+SEGMENT_TABLO. . .  C ADDR   0100H   A   
+SHIFT_DATA . . . .  N NUMB   0020H   A   
+SHIFT_SEND_BYTE. .  C ADDR   0173H   A   
+SIFIR_DEGIL. . . .  C ADDR   015DH   A   
+SON1 . . . . . . .  C ADDR   019EH   A   
+SON2 . . . . . . .  C ADDR   01C1H   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+TEKRAR_URET. . . .  C ADDR   0152H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+ZAR_AT . . . . . .  C ADDR   014FH   A   
+ZAR_BUTON. . . . .  B ADDR   0090H.0 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
